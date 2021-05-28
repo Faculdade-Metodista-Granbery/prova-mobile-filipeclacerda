@@ -16,21 +16,21 @@ export default function App() {
         animated={true}
         backgroundColor="#ffffff"
        />
-         <FlatList
-      data={cards}
-      keyExtractor={item => item.id}
-      renderItem={({item}) =>
-        <CardQuote 
-        key={console.log(item.val().id)}
-        text={item.val().task}
-        img={item.val().background}
-        corCard='#F8E7E2'
-        corContent='#FAE8E0'
-        corTexto='#000000'
-        corLinhaPlay='#D8848F'
-        corLinhaPause='#B25963'
-        corBotao='#541616'
-         />
+      <FlatList
+          data={cards}
+          keyExtractor={item => item.id}
+          renderItem={({item}) =>
+          <CardQuote 
+            key={item.val().id}
+            text={item.val().task}
+            img={item.val().background}
+            corCard='#F8E7E2'
+            corContent='#FAE8E0'
+            corTexto='#000000'
+            corLinhaPlay='#D8848F'
+            corLinhaPause='#B25963'
+            corBotao='#541616'
+          />
       }
       >
       </FlatList>
