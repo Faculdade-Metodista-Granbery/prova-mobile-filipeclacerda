@@ -1,25 +1,41 @@
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, FlatList, StatusBar } from 'react-native';
 import CardQuote from './components/card/card.component';
+import firebase from './services/firebase';
+import { useList } from 'react-firebase-hooks/database'
 
-const notList = [
-  { id: 1, task: 'Suco de gratidão + clorofila', background: 'https://image.freepik.com/free-vector/flat-night-sky-background_23-2148032671.jpg'},
-  { id: 2, task: 'Aplaudir o por do sol', background: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTevLH9vqcGBf4kYYXN1sEafET9xBaEjxUOMg&usqp=CAU'},
-  { id: 3, task: '5 séries de namastê', background: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa6OUSY2144YwI6mFLlxCKdyvkmKn6yLEoLA&usqp=CAU'},
-]
+
 
 export default function App() {
+ const [cards, loading, error] = useList(firebase.getAll())
+  cards.map(value => console.log(value.val()))
   return (
 
     <SafeAreaView style={styles.container}>
       <StatusBar
         animated={true}
-        backgroundColor="#c64242"
+        backgroundColor="#ffffff"
        />
-          <CardQuote />
-
-
+         <FlatList
+      data={cards}
+      keyExtractor={item => item.id}
+      renderItem={({item}) =>
+        <CardQuote 
+        key={console.log(item.val().id)}
+        text={item.val().task}
+        img={item.val().background}
+        corCard='#F8E7E2'
+        corContent='#FAE8E0'
+        corTexto='#000000'
+        corLinhaPlay='#D8848F'
+        corLinhaPause='#B25963'
+        corBotao='#541616'
+         />
+      }
+      >
+      </FlatList>
     </SafeAreaView>
+    
   );
 }
 
