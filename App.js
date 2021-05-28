@@ -24,6 +24,7 @@ export default function App() {
             key={item.val().id}
             text={item.val().task}
             img={item.val().background}
+            duracao={item.val().duracao}
             corCard='#F8E7E2'
             corContent='#FAE8E0'
             corTexto='#000000'

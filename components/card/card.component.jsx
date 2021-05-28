@@ -7,7 +7,7 @@ import { Card, Paragraph, Button } from 'react-native-paper';
 
 
 
-const CardQuote = ({ img, text, corCard, corContent, corTexto, corLinhaPlay, corLinhaPause, corBotao }) => {
+const CardQuote = ({ img, text, duracao, corCard, corContent, corTexto, corLinhaPlay, corLinhaPause, corBotao }) => {
 
 const [playButton, setPlayButton] = useState("play")
 const [corLinha, setCorLinha] = useState('#D8848F')
@@ -38,6 +38,7 @@ const handleButton = () =>{
         }
         
     }
+    const [seconds, setSeconds] = useState(0);
     const styles = StyleSheet.create({
     card: {
         backgroundColor: theme.colors.cardBackground,
@@ -66,16 +67,42 @@ const handleButton = () =>{
         marginBottom: 15
     },
     linha: {
-        borderBottomWidth: 5,
-        marginBottom: -5
+        height: 20,
+        marginBottom: 15,
+        borderRadius: 20
     },
     linhaPause: {
-        borderBottomWidth: 5,
-        marginBottom: 20
+        height: 20,
+        marginBottom: 15,
+        borderRadius: 20,
+    },
+    timer: {
+       fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 18,
+        color: theme.colors.text,
     }
 });
-  const [seconds, setSeconds] = useState(0);
+  const animatedValue = React.useRef(new Animated.Value(-1000)).current;
+  const reactive = React.useRef(new Animated.Value(-1000)).current;
+  const [width, setWidth] = React.useState(0);
+
+  React.useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: reactive,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+
+  },[]);
+
+  React.useEffect(() => {
+    reactive.setValue(-width + (width * seconds)/duracao);
+  }, [seconds, width]) 
+
+ 
   const [isActive, setIsActive] = useState(false);
+  const tempo = new Date(seconds * 1000).toISOString().substr(14, 5)
 
   function toggle() {
     setIsActive(!isActive);
@@ -94,7 +121,7 @@ const handleButton = () =>{
     } else if (!isActive && seconds !== 0) {
       clearInterval(interval);
     }
-    if(seconds== 15){
+    if(seconds== duracao){
         reset()
         setSeconds(0);
         setPlayButton("play")
@@ -102,7 +129,7 @@ const handleButton = () =>{
     return () => clearInterval(interval);
   }, [isActive, seconds]);
 
-    const porcentagem = seconds*100/15
+    const porcentagem = seconds*100/duracao
     return (
         <PaperProvider theme={theme}>
         <Card style={styles.card}>
@@ -111,7 +138,6 @@ const handleButton = () =>{
                 resizeMode={`cover`}
                 source={{ uri: img }} />
             <Card.Content style={styles.content}>
-            {seconds}
             </Card.Content>
             <Card.Actions>
                 <Button 
@@ -126,9 +152,22 @@ const handleButton = () =>{
             <Paragraph style={styles.paragraph}>
                 {text}
             </Paragraph>
-            <View style={[styles.linhaPause, {borderBottomColor: theme.colors.corLinhaPlay, width: "100%"}]}>
-                <View style={[styles.linha, {borderBottomColor: theme.colors.corLinhaPause, width: porcentagem + "%"}]}>  
-                </View>
+            <Paragraph
+             style={styles.timer}>
+            {tempo}
+            </Paragraph>
+            <View 
+            onLayout={(e) => {
+                  const newWidth = e.nativeEvent.layout.width;
+
+                  setWidth(newWidth)
+                }}
+            style={[styles.linhaPause, {backgroundColor: theme.colors.corLinhaPlay, overflow: 'hidden' }]}>
+                <Animated.View 
+               
+                style={[styles.linha, {backgroundColor: theme.colors.corLinhaPause, width: "100%", position: 'absolute',left: 0, top: 0, transform: [{translatex: animatedValue,}]}]}>  
+                
+                </Animated.View>
             </View>
         </Card>
         </PaperProvider>
