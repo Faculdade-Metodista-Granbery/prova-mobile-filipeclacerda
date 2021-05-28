@@ -8,7 +8,7 @@ import { useList } from 'react-firebase-hooks/database'
 
 export default function App() {
  const [cards, loading, error] = useList(firebase.getAll())
-  cards.map(value => console.log(value.val()))
+
   return (
 
     <SafeAreaView style={styles.container}>

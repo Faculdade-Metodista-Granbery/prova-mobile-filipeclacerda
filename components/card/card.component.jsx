@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, Vibration, Dimensions, Platform } from 'react-native';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { Card, Paragraph, Button } from 'react-native-paper';
 
 
 
-
+const windowWidth = Dimensions.get('window').width;
 
 const CardQuote = ({ img, text, duracao, corCard, corContent, corTexto, corLinhaPlay, corLinhaPause, corBotao }) => {
 
@@ -45,7 +45,7 @@ const handleButton = () =>{
         margin: 10,
         borderRadius: 20,
         flex: 1,
-        width: '50vh',
+        width: Platform.OS === 'web' ? '50vh' : windowWidth-20,
         overflow: 'hidden'
     },
     content: {
@@ -103,7 +103,12 @@ const handleButton = () =>{
  
   const [isActive, setIsActive] = useState(false);
   const tempo = new Date(seconds * 1000).toISOString().substr(14, 5)
-
+  const ONE_SECOND_IN_MS = 1000;
+  const PATTERN = [
+      1 * ONE_SECOND_IN_MS,
+      2 * ONE_SECOND_IN_MS,
+      3 * ONE_SECOND_IN_MS
+    ];
   function toggle() {
     setIsActive(!isActive);
   }
@@ -122,6 +127,7 @@ const handleButton = () =>{
       clearInterval(interval);
     }
     if(seconds== duracao){
+        Vibration.vibrate(PATTERN)
         reset()
         setSeconds(0);
         setPlayButton("play")
@@ -165,7 +171,7 @@ const handleButton = () =>{
             style={[styles.linhaPause, {backgroundColor: theme.colors.corLinhaPlay, overflow: 'hidden' }]}>
                 <Animated.View 
                
-                style={[styles.linha, {backgroundColor: theme.colors.corLinhaPause, width: "100%", position: 'absolute',left: 0, top: 0, transform: [{translatex: animatedValue,}]}]}>  
+                style={[styles.linha, {backgroundColor: theme.colors.corLinhaPause, width: "100%", position: 'absolute',left: 0, top: 0, transform: [{translateX: animatedValue,}]}]}>  
                 
                 </Animated.View>
             </View>
